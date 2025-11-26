@@ -60,7 +60,7 @@ const Landing = () => {
                     fontWeight: '800',
                     letterSpacing: '-1px'
                 }}>
-                    Med-Fit
+                    Medi-Fit
                 </h1>
                 <p style={{
                     color: '#666',
