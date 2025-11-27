@@ -4,14 +4,11 @@ import { useNavigate } from 'react-router-dom';
 const Register = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
-        name: '이주희',
-        birthdate: '1999-01-31',
+        name: '',
+        birthdate: '',
         gender: 'female',
-        height: '161',
-        weight: '50',
-        disease: '',
-        activityLevel: 'sedentary',
-        goals: ['weight_loss']
+        height: '',
+        weight: ''
     });
 
     const handleInputChange = (e) => {
@@ -19,19 +16,12 @@ const Register = () => {
         setFormData(prev => ({ ...prev, [name]: value }));
     };
 
-    const handleGoalToggle = (goal) => {
-        setFormData(prev => {
-            const goals = prev.goals.includes(goal)
-                ? prev.goals.filter(g => g !== goal)
-                : [...prev.goals, goal];
-            return { ...prev, goals };
-        });
-    };
-
     const handleSubmit = (e) => {
         e.preventDefault();
-        localStorage.setItem('userHealthData', JSON.stringify(formData));
-        navigate('/result');
+        // Save basic info to localStorage
+        const existingData = JSON.parse(localStorage.getItem('userHealthData') || '{}');
+        localStorage.setItem('userHealthData', JSON.stringify({ ...existingData, ...formData }));
+        navigate('/health-detail');
     };
 
     const inputStyle = {
@@ -131,7 +121,7 @@ const Register = () => {
                                 value={formData.height}
                                 onChange={handleInputChange}
                                 style={inputStyle}
-                                placeholder="165"
+                                placeholder="입력해주세요"
                                 required
                             />
                         </div>
@@ -143,72 +133,10 @@ const Register = () => {
                                 value={formData.weight}
                                 onChange={handleInputChange}
                                 style={inputStyle}
-                                placeholder="55"
+                                placeholder="입력해주세요"
                                 required
                             />
                         </div>
-                    </div>
-                </div>
-
-                {/* Activity Level */}
-                <div style={sectionStyle}>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--color-primary)' }}>활동량</h3>
-                    <div style={{ marginBottom: '16px' }}>
-                        <label style={labelStyle}>평소 활동량이 어느 정도인가요?</label>
-                        <select
-                            name="activityLevel"
-                            value={formData.activityLevel}
-                            onChange={handleInputChange}
-                            style={inputStyle}
-                        >
-                            <option value="sedentary">거의 없음 (좌식 생활)</option>
-                            <option value="lightly_active">가벼운 활동 (주 1-3회 운동)</option>
-                            <option value="moderately_active">보통 활동 (주 3-5회 운동)</option>
-                            <option value="very_active">많은 활동 (주 6-7회 운동)</option>
-                        </select>
-                    </div>
-                </div>
-
-                {/* Health Info */}
-                <div style={sectionStyle}>
-                    <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--color-primary)' }}>건강 상세</h3>
-                    <div style={{ marginBottom: '16px' }}>
-                        <label style={labelStyle}>지병이 있으신가요?</label>
-                        <input
-                            type="text"
-                            name="disease"
-                            value={formData.disease}
-                            onChange={handleInputChange}
-                            style={inputStyle}
-                            placeholder="예: 당뇨, 고혈압 (없으면 비워두세요)"
-                        />
-                    </div>
-
-                    <label style={labelStyle}>건강 목표</label>
-                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                        {[
-                            { id: 'weight_loss', label: '다이어트' },
-                            { id: 'muscle_gain', label: '근육 증가' },
-                            { id: 'diabetes_care', label: '당뇨 조절' },
-                            { id: 'balanced_diet', label: '균형 잡힌 식단' }
-                        ].map(goal => (
-                            <button
-                                key={goal.id}
-                                type="button"
-                                onClick={() => handleGoalToggle(goal.id)}
-                                style={{
-                                    padding: '10px 16px',
-                                    borderRadius: '20px',
-                                    border: `1px solid ${formData.goals.includes(goal.id) ? 'var(--color-primary)' : '#E0E0E0'}`,
-                                    backgroundColor: formData.goals.includes(goal.id) ? 'var(--color-primary-light)' : '#fff',
-                                    color: formData.goals.includes(goal.id) ? 'var(--color-primary-dark)' : '#757575',
-                                    fontWeight: '600',
-                                    fontSize: '0.9rem'
-                                }}
-                            >
-                                {goal.label}
-                            </button>
-                        ))}
                     </div>
                 </div>
 
@@ -220,7 +148,7 @@ const Register = () => {
                         boxShadow: '0 8px 16px rgba(76, 175, 80, 0.3)'
                     }}
                 >
-                    내 건강 분석하기
+                    내 건강 정보 등록하기
                 </button>
             </form>
         </div>
