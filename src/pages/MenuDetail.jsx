@@ -12,34 +12,65 @@ const MenuDetail = () => {
     const [nutrition, setNutrition] = useState({ calories: 0, protein: 0, fat: 0, carbs: 0 });
     const [chartData, setChartData] = useState([]);
     const [suitabilityScore, setSuitabilityScore] = useState(0);
+    const [activeVariation, setActiveVariation] = useState(null);
+    const [variationKey, setVariationKey] = useState('default');
 
-    // Initialize selections
+    // Determine active variation based on user health data
     useEffect(() => {
         if (item) {
+            const userHealthData = JSON.parse(localStorage.getItem('userHealthData') || '{}');
+            let key = 'default';
+
+            if (userHealthData.hasDisease && userHealthData.diseases) {
+                const diseases = userHealthData.diseases;
+                if (diseases.includes('암/항암 치료 중')) key = 'cancer';
+                else if (diseases.includes('신장질환')) key = 'kidneyDisease';
+                else if (diseases.includes('당뇨병')) key = 'diabetes';
+                else if (diseases.includes('고혈압')) key = 'highBloodPressure';
+            }
+
+            setVariationKey(key);
+            setActiveVariation(item.variations[key]);
+        }
+    }, [item]);
+
+    // Initialize selections based on active variation
+    useEffect(() => {
+        if (activeVariation) {
             const initialSelections = {};
-            Object.keys(item.options).forEach(key => {
-                if (['vegetables', 'topping', 'salad'].includes(key)) {
-                    initialSelections[key] = [];
+            Object.keys(activeVariation).forEach(key => {
+                const options = activeVariation[key];
+                // Check if it's a multiple selection category (vegetables, topping for some menus)
+                // Logic: If multiple defaults exist, it's likely a multiple selection field.
+                // Or we can stick to hardcoded multiple fields: vegetables, topping (for pizza/pasta), etc.
+                const isMultiple = ['vegetables', 'topping'].includes(key);
+
+                if (isMultiple) {
+                    initialSelections[key] = options.filter(o => o.isDefault).map(o => o.name);
                 } else {
-                    initialSelections[key] = item.options[key][0].name;
+                    const defaultOpt = options.find(o => o.isDefault);
+                    initialSelections[key] = defaultOpt ? defaultOpt.name : (options[0] ? options[0].name : '');
                 }
             });
             setSelections(initialSelections);
         }
-    }, [item]);
+    }, [activeVariation]);
 
     // Calculate nutrition and metrics
     useEffect(() => {
-        if (item && Object.keys(selections).length > 0) {
+        if (item && activeVariation && Object.keys(selections).length > 0) {
             let newNut = { ...item.baseNutrition };
 
             Object.keys(selections).forEach(category => {
                 const selectedValue = selections[category];
-                const categoryOptions = item.options[category];
+                // Look up nutrition info from the global options pool
+                const globalOptions = item.options[category];
+
+                if (!globalOptions) return;
 
                 if (Array.isArray(selectedValue)) {
                     selectedValue.forEach(val => {
-                        const opt = categoryOptions.find(o => o.name === val);
+                        const opt = globalOptions.find(o => o.name === val);
                         if (opt) {
                             newNut.calories += (opt.cal || 0);
                             newNut.protein += (opt.protein || 0);
@@ -48,7 +79,7 @@ const MenuDetail = () => {
                         }
                     });
                 } else {
-                    const opt = categoryOptions.find(o => o.name === selectedValue);
+                    const opt = globalOptions.find(o => o.name === selectedValue);
                     if (opt) {
                         newNut.calories += (opt.cal || 0);
                         newNut.protein += (opt.protein || 0);
@@ -68,35 +99,22 @@ const MenuDetail = () => {
             setNutrition(finalNutrition);
 
             // Calculate Metrics for Chart
-            // Logic: Higher score (out of 100) means "better" or "more suitable" for a general healthy diet
-
-            // 1. Weight (Calories): Lower is better (up to a point, but for diet context usually lower)
-            // Assume 800kcal is max "bad", 300kcal is "good"
             const weightScore = Math.max(0, Math.min(100, 100 - ((finalNutrition.calories - 300) / 5)));
-
-            // 2. Blood Sugar (Carbs): Lower is better
-            // Assume 100g is max "bad"
             const bloodSugarScore = Math.max(0, Math.min(100, 100 - (finalNutrition.carbs * 0.8)));
-
-            // 3. Protein: Higher is better
-            // Assume 40g is max "good"
             const proteinScore = Math.max(0, Math.min(100, (finalNutrition.protein / 40) * 100));
-
-            // 4. Fat: Moderate/Lower is better
-            // Assume 30g is max "bad"
             const fatScore = Math.max(0, Math.min(100, 100 - (finalNutrition.fat * 2.5)));
 
-            // 5. Gut Health (Vegetables): More veggies = better
-            const veggieCount = (selections.vegetables || []).length;
-            const gutHealthScore = Math.min(100, 40 + (veggieCount * 20));
+            const veggieCount = (selections.vegetables || []).length + (selections.topping ? selections.topping.filter(t => ['시금치', '버섯', '브로콜리'].some(v => t.includes(v))).length : 0);
+            const gutHealthScore = Math.min(100, 40 + (veggieCount * 15));
 
-            // 6. Blood Pressure (Sodium proxy): Dressing choice
-            // Lemon/Olive Oil/Herb = Good, Balsamic/Yogurt = Moderate, Others = Lower
-            let bpScore = 70; // Base
-            const dressing = selections.dressing;
-            if (dressing === '레몬' || dressing === '올리브오일' || dressing === '허브') bpScore += 20;
-            else if (dressing === '발사믹' || dressing === '오리엔탈') bpScore -= 10;
-            else if (dressing === '요거트') bpScore += 10;
+            let bpScore = 70;
+            const dressing = selections.dressing || selections.sauce;
+            if (dressing) {
+                if (dressing.includes('레몬') || dressing.includes('올리브') || dressing.includes('허브') || dressing.includes('무염')) bpScore += 20;
+                else if (dressing.includes('발사믹') || dressing.includes('저염')) bpScore += 10;
+                else if (dressing.includes('요거트')) bpScore += 10;
+                else bpScore -= 10;
+            }
             bpScore = Math.min(100, Math.max(0, bpScore));
 
             const newChartData = [
@@ -109,13 +127,13 @@ const MenuDetail = () => {
             ];
             setChartData(newChartData);
 
-            // Calculate Suitability Score
             const totalScore = newChartData.reduce((acc, curr) => acc + curr.A, 0);
             setSuitabilityScore(Math.round(totalScore / 6));
         }
-    }, [selections, item]);
+    }, [selections, item, activeVariation]);
 
     if (!item) return <div className="container">메뉴를 찾을 수 없습니다.</div>;
+    if (!activeVariation) return <div className="container">로딩 중...</div>;
 
     const handleOptionChange = (category, value, isMultiple) => {
         setSelections(prev => {
@@ -143,10 +161,7 @@ const MenuDetail = () => {
             options: selections
         };
         localStorage.setItem('currentOrder', JSON.stringify(orderData));
-
-        // Force scroll to top before navigation
         window.scrollTo(0, 0);
-
         navigate('/order-complete');
     };
 
@@ -156,7 +171,17 @@ const MenuDetail = () => {
         dressing: '드레싱',
         grain: '곡물 선택',
         sauce: '소스 선택',
-        topping: '토핑 추가'
+        topping: '토핑 추가',
+        protein: '단백질',
+        cheese: '치즈'
+    };
+
+    const variationLabels = {
+        default: '기본 구성',
+        cancer: '암 환자용 구성',
+        diabetes: '당뇨 환자용 구성',
+        highBloodPressure: '고혈압 환자용 구성',
+        kidneyDisease: '신장질환 환자용 구성'
     };
 
     return (
@@ -177,6 +202,19 @@ const MenuDetail = () => {
                         objectFit: 'cover'
                     }}
                 />
+                <div style={{
+                    position: 'absolute',
+                    bottom: '16px',
+                    left: '16px',
+                    backgroundColor: 'rgba(0,0,0,0.6)',
+                    color: '#fff',
+                    padding: '6px 12px',
+                    borderRadius: '20px',
+                    fontSize: '0.9rem',
+                    fontWeight: '600'
+                }}>
+                    {variationLabels[variationKey]}
+                </div>
             </div>
 
             <h2 style={{ fontSize: '1.5rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>{item.name}</h2>
@@ -241,18 +279,27 @@ const MenuDetail = () => {
 
             <h3 style={{ fontSize: '1.2rem', marginBottom: '16px', marginTop: '32px' }}>나만의 메뉴 만들기</h3>
 
-            {Object.keys(item.options).map(category => {
-                const isMultiple = ['vegetables', 'topping', 'salad'].includes(category);
+            {Object.keys(activeVariation).map(category => {
+                const options = activeVariation[category];
+                // Hide category if no options available
+                if (!options || options.length === 0) return null;
+
+                const isMultiple = ['vegetables', 'topping'].includes(category);
+
                 return (
                     <div key={category} style={{ marginBottom: '24px' }}>
                         <h4 style={{ marginBottom: '12px', color: '#424242' }}>
                             {categoryLabels[category] || category}
                         </h4>
                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
-                            {item.options[category].map(opt => {
+                            {options.map(opt => {
                                 const isSelected = isMultiple
                                     ? selections[category]?.includes(opt.name)
                                     : selections[category] === opt.name;
+
+                                // Find global option for calorie display
+                                const globalOpt = item.options[category]?.find(o => o.name === opt.name);
+                                const cal = globalOpt ? globalOpt.cal : 0;
 
                                 return (
                                     <button
@@ -272,9 +319,9 @@ const MenuDetail = () => {
                                         }}
                                     >
                                         {opt.name}
-                                        {opt.cal !== 0 && (
+                                        {cal !== 0 && (
                                             <span style={{ fontSize: '0.75rem', color: isSelected ? 'var(--color-primary-dark)' : '#999' }}>
-                                                {opt.cal > 0 ? `+${opt.cal}` : opt.cal}
+                                                {cal > 0 ? `+${cal}` : cal}
                                             </span>
                                         )}
                                     </button>
