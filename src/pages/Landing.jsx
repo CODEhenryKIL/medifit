@@ -60,17 +60,16 @@ const Landing = () => {
                     fontWeight: '800',
                     letterSpacing: '-1px'
                 }}>
-                    Medi-Fit
+                    MediFit
                 </h1>
                 <p style={{
                     color: '#666',
-                    marginBottom: '2rem',
-                    fontSize: '1.1rem',
-                    lineHeight: '1.6',
-                    fontWeight: '500'
+                    fontSize: '1.2rem',
+                    marginBottom: '40px',
+                    lineHeight: '1.6'
                 }}>
-                    당신을 위한 맞춤형 건강 식단,<br />
-                    맛있고 건강하게 시작하세요.
+                    당신을 위한<br />
+                    맛있고 건강한 한 끼 처방
                 </p>
                 <button
                     className="btn-primary"
