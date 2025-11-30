@@ -22,8 +22,21 @@ const MenuRecommendation = () => {
         navigate('/order-complete');
     };
 
-    // Featured menu: 저당 두부면 샐러드 파스타 (ID: 1)
-    const featuredMenu = menuItems.find(item => item.id === 1);
+    // Get user health data to determine recommendation
+    const userHealthData = JSON.parse(localStorage.getItem('userHealthData') || '{}');
+    const diseases = userHealthData.diseases || [];
+
+    // Determine featured menu ID based on disease
+    let featuredMenuId = 1; // Default: Pasta (Diabetes, Hypertension, None)
+
+    if (diseases.includes('암/항암 치료 중')) {
+        featuredMenuId = 2; // Risotto
+    } else if (diseases.includes('신장질환')) {
+        featuredMenuId = 3; // Pizza
+    }
+
+    // Featured menu based on logic
+    const featuredMenu = menuItems.find(item => item.id === featuredMenuId);
 
     return (
         <div className="container" style={{ paddingBottom: '40px' }}>
