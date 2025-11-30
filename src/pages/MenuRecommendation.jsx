@@ -81,7 +81,7 @@ const MenuRecommendation = () => {
                         </div>
                         <div style={{ padding: '24px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
-                                <h3 style={{ fontSize: '1.4rem', color: '#333', fontWeight: '700' }}>{featuredMenu.name}</h3>
+                                <h3 style={{ fontSize: '1.2rem', color: '#333', fontWeight: '700' }}>{featuredMenu.name}</h3>
                                 <span style={{
                                     backgroundColor: 'var(--color-primary-light)',
                                     color: 'var(--color-primary-dark)',
@@ -93,7 +93,7 @@ const MenuRecommendation = () => {
                                     {featuredMenu.baseNutrition.calories} kcal
                                 </span>
                             </div>
-                            <p style={{ color: '#666', fontSize: '1rem', lineHeight: '1.6', marginBottom: '16px' }}>
+                            <p style={{ color: '#666', fontSize: '0.9rem', lineHeight: '1.6', marginBottom: '16px' }}>
                                 {featuredMenu.description}
                             </p>
                             <button style={{

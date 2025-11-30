@@ -84,8 +84,6 @@ const Register = () => {
                                     ...inputStyle,
                                     width: '100%',
                                     minWidth: 0,
-                                    appearance: 'none',
-                                    WebkitAppearance: 'none',
                                     height: '54px' /* Match standard height */
                                 }}
                                 required
