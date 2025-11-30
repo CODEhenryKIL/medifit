@@ -31,7 +31,7 @@ const MenuRecommendation = () => {
                 <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>오늘의 한끼 처방</h2>
                 <p style={{ color: 'var(--color-text-sub)', whiteSpace: 'pre-line', lineHeight: '1.5' }}>
                     등록해주신 관리 목표에 맞춰{'\n'}
-                    MediFit이 추천해주는 메뉴 입니다.
+                    메디핏이 추천하는 메뉴 입니다.
                 </p>
             </header>
 
@@ -114,6 +114,56 @@ const MenuRecommendation = () => {
                 </div>
             )}
 
+            {/* Recent Orders Section (Moved to middle) */}
+            <div style={{ marginBottom: '40px' }}>
+                <h3 style={{ fontSize: '1.1rem', marginBottom: '12px', color: '#757575' }}>최근 주문한 메뉴</h3>
+                <div
+                    className="card"
+                    onClick={handleQuickOrder}
+                    style={{
+                        padding: '16px',
+                        cursor: 'pointer',
+                        border: '1px solid #eee',
+                        backgroundColor: '#FAFAFA',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '16px'
+                    }}
+                >
+                    <div style={{
+                        width: '50px',
+                        height: '50px',
+                        borderRadius: '10px',
+                        overflow: 'hidden',
+                        backgroundColor: '#FFF3E0',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center'
+                    }}>
+                        <img
+                            src={menuItems.find(i => i.id === 2)?.image}
+                            alt="고단백 단호박 크림 리조또"
+                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                        <h4 style={{ fontSize: '0.95rem', marginBottom: '4px', color: '#555', fontWeight: '600' }}>고단백 단호박 크림 리조또</h4>
+                        <p style={{ fontSize: '0.8rem', color: '#888' }}>현미, 양송이, 시금치 추가</p>
+                    </div>
+                    <button style={{
+                        padding: '6px 12px',
+                        backgroundColor: '#9E9E9E',
+                        color: '#fff',
+                        borderRadius: '16px',
+                        fontSize: '0.8rem',
+                        fontWeight: '600',
+                        border: 'none'
+                    }}>
+                        재주문
+                    </button>
+                </div>
+            </div>
+
             {/* All Menus */}
             <h3 style={{ fontSize: '1.1rem', marginBottom: '16px', color: 'var(--color-primary)' }}>전체 메뉴</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', marginBottom: '40px' }}>
@@ -149,7 +199,7 @@ const MenuRecommendation = () => {
                         </div>
                         <div style={{ padding: '20px' }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                                <h3 style={{ fontSize: '1.1rem', color: '#333' }}>{item.name}</h3>
+                                <h3 style={{ fontSize: '1.1rem', color: '#333', fontWeight: '600' }}>{item.name}</h3>
                                 <span style={{
                                     backgroundColor: 'var(--color-primary-light)',
                                     color: 'var(--color-primary-dark)',
@@ -169,55 +219,7 @@ const MenuRecommendation = () => {
                 ))}
             </div>
 
-            {/* Quick Order Section (Moved to bottom) */}
-            <div style={{ marginBottom: '20px', borderTop: '1px solid #eee', paddingTop: '32px' }}>
-                <h3 style={{ fontSize: '1.1rem', marginBottom: '12px', color: '#757575' }}>최근 주문한 메뉴</h3>
-                <div
-                    className="card"
-                    onClick={handleQuickOrder}
-                    style={{
-                        padding: '16px',
-                        cursor: 'pointer',
-                        border: '1px solid #eee',
-                        backgroundColor: '#FAFAFA',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '16px'
-                    }}
-                >
-                    <div style={{
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '10px',
-                        overflow: 'hidden',
-                        backgroundColor: '#FFF3E0',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                    }}>
-                        <img
-                            src={menuItems.find(i => i.id === 2)?.image}
-                            alt="고단백 단호박 크림 리조또"
-                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        />
-                    </div>
-                    <div style={{ flex: 1 }}>
-                        <h4 style={{ fontSize: '0.95rem', marginBottom: '4px', color: '#555' }}>고단백 단호박 크림 리조또</h4>
-                        <p style={{ fontSize: '0.8rem', color: '#888' }}>현미, 양송이, 시금치 추가</p>
-                    </div>
-                    <button style={{
-                        padding: '6px 12px',
-                        backgroundColor: '#9E9E9E',
-                        color: '#fff',
-                        borderRadius: '16px',
-                        fontSize: '0.8rem',
-                        fontWeight: '600',
-                        border: 'none'
-                    }}>
-                        재주문
-                    </button>
-                </div>
-            </div>
+
         </div>
     );
 };

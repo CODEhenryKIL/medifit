@@ -33,8 +33,8 @@ const OrderComplete = () => {
                 }}>
                     ✓
                 </div>
-                <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>주문이 완료되었습니다!</h2>
-                <p style={{ color: 'var(--color-text-sub)' }}>맛있게 준비해서 보내드릴게요.</p>
+                <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>주문이 완료되었습니다.</h2>
+                <p style={{ color: 'var(--color-text-sub)' }}>맛있게 준비해 드릴게요.</p>
             </div>
 
             <div className="card" style={{ textAlign: 'left' }}>

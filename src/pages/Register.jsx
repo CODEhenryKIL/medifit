@@ -83,9 +83,10 @@ const Register = () => {
                                 style={{
                                     ...inputStyle,
                                     width: '100%',
-                                    minWidth: 0, /* Allow shrinking */
-                                    appearance: 'none', /* Remove default styling */
-                                    WebkitAppearance: 'none' /* Safari fix */
+                                    minWidth: 0,
+                                    appearance: 'none',
+                                    WebkitAppearance: 'none',
+                                    height: '54px' /* Match standard height */
                                 }}
                                 required
                             />
@@ -99,7 +100,8 @@ const Register = () => {
                                 style={{
                                     ...inputStyle,
                                     width: '100%',
-                                    minWidth: 0
+                                    minWidth: 0,
+                                    height: '54px' /* Match date input height */
                                 }}
                             >
                                 <option value="female">여성</option>

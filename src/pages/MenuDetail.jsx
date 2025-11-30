@@ -274,15 +274,6 @@ const MenuDetail = () => {
                         <div style={{ fontWeight: '600', fontSize: '1.1rem' }}>{nutrition.fat}g</div>
                         <div style={{ fontSize: '0.8rem', color: '#757575' }}>지방</div>
                     </div>
-                    {/* Suitability Score */}
-                    <div style={{
-                        borderLeft: '1px solid #C5E1A5',
-                        paddingLeft: '32px',
-                        marginLeft: '0px'
-                    }}>
-                        <div style={{ fontWeight: '800', fontSize: '1.4rem', color: 'var(--color-primary-dark)' }}>{suitabilityScore}</div>
-                        <div style={{ fontSize: '0.8rem', color: '#757575', fontWeight: '600' }}>점수</div>
-                    </div>
                 </div>
             </div>
 

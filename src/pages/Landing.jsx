@@ -68,7 +68,7 @@ const Landing = () => {
                     marginBottom: '40px',
                     lineHeight: '1.6'
                 }}>
-                    당신을 위한<br />
+                    오직 나를 위한,<br />
                     맛있고 건강한 한 끼 처방
                 </p>
                 <button

@@ -25,11 +25,8 @@ const HealthDetail = () => {
     ];
 
     const handleDiseaseToggle = (disease) => {
-        setSelectedDiseases(prev =>
-            prev.includes(disease)
-                ? prev.filter(d => d !== disease)
-                : [...prev, disease]
-        );
+        // Single selection logic
+        setSelectedDiseases([disease]);
     };
 
     const handleGoalToggle = (goal) => {
@@ -139,8 +136,8 @@ const HealthDetail = () => {
     return (
         <div style={containerStyle}>
             <header style={headerStyle}>
-                <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>건강 상세</h2>
-                <p style={{ color: 'var(--color-text-sub)' }}>건강 정보를 입력하면 AI가 메뉴를 추천해줘요.</p>
+                <h2 style={{ fontSize: '1.8rem', color: 'var(--color-primary-dark)', marginBottom: '8px' }}>건강정보등록</h2>
+                <p style={{ color: 'var(--color-text-sub)' }}>데이터 기반으로 AI가 메뉴를 추천드려요.</p>
             </header>
 
             {step === 1 && (
@@ -172,7 +169,7 @@ const HealthDetail = () => {
                 <div>
                     {hasDisease ? (
                         <>
-                            <h3 style={questionStyle}>Q2. 해당되는 질환을 모두 선택해주세요. (복수 선택 가능)</h3>
+                            <h3 style={questionStyle}>Q2. 해당되는 질환을 선택해주세요. (단일 선택)</h3>
                             <div style={optionContainerStyle}>
                                 {diseaseOptions.map(option => (
                                     <button
