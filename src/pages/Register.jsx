@@ -83,8 +83,9 @@ const Register = () => {
                                         top: '50%',
                                         left: '16px',
                                         transform: 'translateY(-50%)',
-                                        color: '#757575', // Darker placeholder color for better visibility
+                                        color: '#9E9E9E', // Standard placeholder gray
                                         fontSize: '16px',
+                                        fontWeight: '400', // Ensure normal weight for placeholder
                                         pointerEvents: 'none', // Allow clicks to pass through to input
                                         zIndex: 0
                                     }}>
